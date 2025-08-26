@@ -155,30 +155,6 @@ drosera dryrun
 
 
 
-## 1. Whitelist Your Operator
-**1- Edit Trap configuration:**
-```bash
-cd my-drosera-trap
-nano drosera.toml
-```
-Add the following codes at the bottom of `drosera.toml`:
-```toml
-private_trap = true
-whitelist = ["Operator_Address1","Operator_Address2"]
-```
-* Replace `Operator_Address` with your EVM wallet `Public Address` between " " symbols
-* Your `Public Address` is your `Operator_Address`.
-
-**2- Update Trap Configuration:**
-```bash
-DROSERA_PRIVATE_KEY=xxx drosera apply
-```
-* Replace `xxx` with your EVM wallet `privatekey`
-* If RPC issue, use `DROSERA_PRIVATE_KEY=xxx drosera apply --eth-rpc-url RPC` and replace `RPC` with your own.
-
-Your Trap should be private now with your operator address whitelisted internally.
-
-![image](https://github.com/user-attachments/assets/9ae6d58e-3be7-4d0d-9c4b-3b486224df4e)
 
 
 
