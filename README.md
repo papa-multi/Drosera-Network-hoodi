@@ -2,12 +2,20 @@
 * 2 CPU Cores
 * 4 GB RAM
 * 20 GB Disk Space
-* Create your own `Ethereum Hoodi RPC` in [Alchemy](https://dashboard.alchemy.com/) or [QuickNode](https://dashboard.quicknode.com/).
+* Create your own `Ethereum Hoodi RPC` in [Alchemy](https://dashboard.alchemy.com/) or [QuickNode](https://dashboard.quicknode.com/) or [ankr](https://www.ankr.com/rpc).
+--------
+
+# important
+ 
+This guide is for users who have already completed the project tasks on Sepolia.
+Make sure that both of your wallet addresses have received Hoodi faucet tokens before getting started.
 
 
+[faucet1](https://stakely.io/faucet/ethereum-hoodi-testnet-eth)
+[faucet2](https://faucet.drosera.io/)
 
-# Existing Holesky user
-If you have deployed your trap and operator on Holesky network, move them to Hoodi network by following this guide
+
+---------
 
 ### Install Dependecies
 ```
@@ -100,8 +108,8 @@ bun install
 forge build
 ```
 
-## 1. Whitelist Your Operator
-**1- Edit Trap configuration:**
+##  Whitelist Your Operator
+** Edit Trap configuration:**
 ```bash
 cd my-drosera-trap
 nano drosera.toml
@@ -114,22 +122,20 @@ whitelist = ["Operator_Address1","Operator_Address2"]
 * Replace `Operator_Address` with your EVM wallet `Public Address` between " " symbols
 * Your `Public Address` is your `Operator_Address`.
 
-**2- Update Trap Configuration:**
+**2- Deploy Trap:**
+
+use Operator_Address1 pv-key
+
 ```bash
 DROSERA_PRIVATE_KEY=xxx drosera apply
 ```
 * Replace `xxx` with your EVM wallet `privatekey`
 * If RPC issue, use `DROSERA_PRIVATE_KEY=xxx drosera apply --eth-rpc-url RPC` and replace `RPC` with your own.
+* Enter the command, when prompted, write `ofc` and press Enter.
 
 Your Trap should be private now with your operator address whitelisted internally.
 
 
-**Deploy Trap**:
-```bash
-DROSERA_PRIVATE_KEY=xxx drosera apply
-```
-* Replace `xxx` with your EVM wallet `privatekey` (Ensure it's funded with `Hoodi ETH`)
-* Enter the command, when prompted, write `ofc` and press Enter.
 
 ![image](https://github.com/user-attachments/assets/6d1161f1-4423-4ce6-a1a2-77ce567186dc)
 
@@ -158,7 +164,7 @@ drosera dryrun
 
 
 
-## 2. Operator CLI
+## 6. Operator CLI
 ```bash
 cd ~
 ```
@@ -184,14 +190,14 @@ sudo cp drosera-operator /usr/bin
 drosera-operator
 ```
 
-## 3. Install Docker image
+## 7. Install Docker image
 ```
 docker pull ghcr.io/drosera-network/drosera-operator:latest
 ```
 
 ---
 
-## 4. Register Operator
+## 8. Register Operator
 
 use pv-key from Operator_Address1
 
@@ -210,10 +216,9 @@ drosera-operator register --eth-rpc-url https://rpc.hoodi.ethpandaops.io --eth-p
 ---
 
 
-sudo ufw allow 31315/tcp
-sudo ufw allow 31316/tcp
 
-## 5. Open Ports
+
+## 9. Open Ports
 ```bash
 # Enable firewall
 sudo ufw allow ssh
@@ -230,7 +235,7 @@ sudo ufw allow 31316/tcp
 ---
 
 
-## 6. Install & Run Operator
+## 10. Install & Run Operator
 
 ```
 mkdir Drosera-Network
@@ -292,4 +297,26 @@ volumes:
 pls replace `<use-rpc>` with your RPC URL
 
 
+### 11. Opt-in 2nd Operator
 
+**Method**: via CLI
+```bash
+drosera-operator optin --eth-rpc-url https://rpc.hoodi.ethpandaops.io --eth-private-key 1nd_Operator_Privatekey --trap-config-address Trap_Address
+```
+* Replace `1nd_Operator_Privatekey`  & `Trap_Address`
+
+```bash
+drosera-operator optin --eth-rpc-url https://rpc.hoodi.ethpandaops.io --eth-private-key 2nd_Operator_Privatekey --trap-config-address Trap_Address
+```
+* Replace `2nd_Operator_Privatekey`  & `Trap_Address`
+
+### 12. run Operators
+```bash
+cd ~/Droseta-Network
+docker compose up -d
+```
+* You will get Green Blocks after a while! wait for 10 min pls 
+
+check dashboar 
+
+![image](https://github.com/user-attachments/assets/e639c5e9-cacd-42f4-8c4e-82597a6a71fd)
