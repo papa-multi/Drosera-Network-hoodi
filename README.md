@@ -107,6 +107,40 @@ bun install
 ```bash
 forge build
 ```
+# if you get this issue :
+
+
+
+<img width="1588" height="938" alt="forge" src="https://github.com/user-attachments/assets/f8205bcb-4e68-4d21-bd0f-3d73f8a189aa" />
+
+
+
+```
+nano package.json
+```
+
+ By changing `contracts` to `drosera-contracts`
+
+like this :
+
+<img width="810" height="221" alt="ddddddddddd" src="https://github.com/user-attachments/assets/cb7ca63c-1422-4d30-999a-d1c20efce858" />
+
+
+```
+ cd my-drosera-trap && rm -rf node_modules bun.lockb
+```
+
+```
+cd my-drosera-trap && bun install
+```
+
+forge again:
+
+```
+cd my-drosera-trap && forge build
+```
+
+
 
 ##  Whitelist Your Operator
 ** Edit Trap configuration:**
@@ -320,3 +354,128 @@ docker compose up -d
 check dashboar 
 
 ![image](https://github.com/user-attachments/assets/e639c5e9-cacd-42f4-8c4e-82597a6a71fd)
+
+--------------
+
+
+## HOW TO GET 
+`CADET` & `CORPOLAR` ROLES:
+
+
+### 1. Create New Trap
+1- Move to your trap directory:
+```bash
+cd my-drosera-trap
+```
+2- Create a new `Trap.sol` file:
+```bash
+nano src/Trap.sol
+```
+3- Replase the following contract code in it:
+```
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import {ITrap} from "drosera-contracts/interfaces/ITrap.sol";
+
+interface IMockResponse {
+    function isActive() external view returns (bool);
+}
+
+contract Trap is ITrap {
+    // Updated response contract address
+    address public constant RESPONSE_CONTRACT = 0x25E2CeF36020A736CF8a4D2cAdD2EBE3940F4608;
+    string constant discordName = "DISCORD_USERNAME"; // Replace with your Discord username
+
+    function collect() external view returns (bytes memory) {
+        bool active = IMockResponse(RESPONSE_CONTRACT).isActive();
+        return abi.encode(active, discordName);
+    }
+
+    function shouldRespond(bytes[] calldata data) external pure returns (bool, bytes memory) {
+        (bool active, string memory name) = abi.decode(data[0], (bool, string));
+        if (!active || bytes(name).length == 0) {
+            return (false, bytes(""));
+        }
+
+        return (true, abi.encode(name));
+    }
+}
+```
+* Replace `DISCORD_USERNAME` with your discord username.
+* To save: `Ctrl+X`, `Y` & `Enter`
+
+### 2. Edit `drosera.toml` config
+```
+nano drosera.toml
+```
+* Modify the values of the specified variables as follows:
+* `path` = `"out/Trap.sol/Trap.json"`
+* `response_contract` = `"0x25E2CeF36020A736CF8a4D2cAdD2EBE3940F4608"`
+* `response_function` = `"respondWithDiscordName(string)"`
+* `eth_chain_id` = `560048`
+* `drosera_address` = `"0x91cB447BaFc6e0EA0F4Fe056F5a9b1F14bb06e5D"`
+
+Your final `drosera.toml` file should match the example shown below:
+
+![image](https://github.com/user-attachments/assets/67b7cd71-0a01-49e7-aa69-540bd3d1f37d)
+
+
+### 3. Apply the modifications to the Trap
+1- Compile your Trap's Contract:
+```
+forge build
+```
+* If you got errors like: `command not found`, Enter `source /root/.bashrc` or reinstall dependecies from [here](https://github.com/0xmoei/Drosera-Network#1-configure-enviorments)
+
+2- Test the trap before deploying:
+```bash
+drosera dryrun
+```
+
+3- Apply and Deploy the Trap:
+```bash
+DROSERA_PRIVATE_KEY=xxx drosera apply
+```
+* Replace `xxx` with your EVM wallet privatekey (Ensure it's funded with Hoodi ETH)
+* Enter the command, when prompted, write `ofc` and press `Enter`.
+
+![image](https://github.com/user-attachments/assets/ddccd255-4288-4a8d-99a2-77ba1269089b)
+
+### 5. Re-run Operator nodes
+```
+cd
+cd Drosera-Network
+```
+```
+docker compose up -d
+```
+Wait until you get green blocks in the explorer.
+
+### 4. Verify Trap can respond
+After the trap is deployed and you got green blocks in the dashboard, we can check if the user has responded by calling the `isResponder` function on the response contract.
+```bash
+source /root/.bashrc
+cast call 0x25E2CeF36020A736CF8a4D2cAdD2EBE3940F4608 "isResponder(address)(bool)" OWNER_ADDRESS --rpc-url https://rpc.hoodi.ethpandaops.io
+```
+* Replace `OWNER_ADDRESS` with your Trap's owner address. (Your main address that has deployed the Trap's contract)
+* If you receive `true` as a response, it means you have successfully completed all the steps.
+
+![image](https://github.com/user-attachments/assets/b6f89508-1ce4-46d6-8dcb-685ae7063d07)
+
+* It may take a few minutes to successfully receive `true` as a response
+
+### 6. View the List of submitted Discord Names
+```bash
+source /root/.bashrc
+cast call 0x25E2CeF36020A736CF8a4D2cAdD2EBE3940F4608 "getDiscordNamesBatch(uint256,uint256)(string[])" 0 2000 --rpc-url https://rpc.hoodi.ethpandaops.io
+```
+# NOTE:
+
+after done this go to discorde open ticket send green block and your name on trap.sol list 
+
+
+
+
+
+
