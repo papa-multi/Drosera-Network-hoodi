@@ -476,6 +476,42 @@ after done this go to discorde open ticket send green block and your name on tra
 
 
 
+------------------------
+
+# If your Docker logs look like this and you still see a red block inside the dashboard, do the following
+
+<img width="1182" height="862" alt="drosera block" src="https://github.com/user-attachments/assets/380a3f2f-eb0e-4d97-a09e-dec06adc49b3" />
+
+```
+docker stop drosera-node1 drosera-node2
+```
+
+```
+docker rm drosera-node1 drosera-node2
+```
+
+```
+cd Drosera-Network
+```
+
+
+```
+docker pull ghcr.io/drosera-network/drosera-operator:latest
+```
+
+
+```
+docker compose up -d
+```
+
+fix 
+
+
+
+
+
+
+
 
 
 
